@@ -1,0 +1,25 @@
+body {
+	font-family: "Lucida Grande", "Sans-serif", "Trebuchet MS", "Verdana";
+	font-size: 11px;
+	background: #FFFFFF;
+	color: #000000;
+}
+
+div#container {
+	width: 350px; /*the width of the element*/
+	/*height: 300px; the height of the element*/
+	position: absolute; /*absolute position to center the element in relation to its parent element*/
+	left: 50%; /*the left border of the element is positioned at half of the available width of the parent element*/
+	/*top: 50%; the top border of the element is positioned at half of the available height of the parent element*/
+	margin-left: -175px; /*half of the element width is removed from the left margin to center it*/
+	/*margin-top: -150px; half of the element height is removed from the top margin to center it*/
+	margin-top: 100px;
+	padding: 10px;
+	
+	/* border */
+	border: 1px solid black;
+	/* border-radius */
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
