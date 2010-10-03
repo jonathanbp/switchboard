@@ -61,9 +61,14 @@ public class SwitchBoard extends Server implements Observer {
         Handler phoneCallbackHandler = new AbstractHandler() {
 			
 			@Override
-			public void handle(String arg0, org.eclipse.jetty.server.Request arg1,
+			public void handle(String path, org.eclipse.jetty.server.Request arg1,
 					HttpServletRequest arg2, HttpServletResponse arg3)
 					throws IOException, ServletException {
+				
+				Log.warn(path);
+				
+				// path is <ip>/<action>
+				// TODO find person with phone with ip and act according to action
 				
 				for(Person p : people.find(Persons.withEmail("one@cetrea.com"))) {
 					PhoneStatus s = (p.getPhone().getStatus()==PhoneStatus.OffHook) ? PhoneStatus.OnHook : PhoneStatus.OffHook;
