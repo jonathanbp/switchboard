@@ -5,11 +5,11 @@ import org.eclipse.jetty.util.log.Log;
 
 public class Receive {
 	
-	private static ObjectMapper mapper = new ObjectMapper();
+	private static ObjectMapper _mapper = new ObjectMapper();
 	
 	public static Object fromJSON(String json, Class clazz) {
 		try {
-			return mapper.readValue(json, clazz);
+			return _mapper.readValue(json, clazz);
 		} 
 		catch (Exception e) {
 			Log.warn(e);
