@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.Persons;
 import model.entities.Person;
-import model.entities.Phone;
 import model.entities.PhoneStatus;
 
 import org.eclipse.jetty.server.Handler;
@@ -22,9 +21,10 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
+
+import switchboard.util.ListUtil;
 
 
 
@@ -60,6 +60,9 @@ public class SwitchBoard extends Server implements Observer {
         // handler for phone callbacks
         Handler phoneCallbackHandler = new AbstractHandler() {
 			
+        	private final int IP = 0;
+        	private final int ACTION = 1;
+        	
 			@Override
 			public void handle(String path, org.eclipse.jetty.server.Request arg1,
 					HttpServletRequest arg2, HttpServletResponse arg3)
@@ -68,12 +71,20 @@ public class SwitchBoard extends Server implements Observer {
 				Log.warn(path);
 				
 				// path is <ip>/<action>
-				// TODO find person with phone with ip and act according to action
+				String[] request = path.split("/");
+				if(request.length!=2) {
+					Log.warn("SNOM request was malformed - "+path);
+					return;
+				}
 				
-				for(Person p : people.find(Persons.withEmail("one@cetrea.com"))) {
+				// find person with phone with ip and act according to action
+				Person p = ListUtil.single(people.find(Persons.withPhone(request[IP])));				
+				p.getPhone().setStatus(PhoneStatus.fromString(request[ACTION]));
+				
+				/*for(Person p : people.find(Persons.withEmail("one@cetrea.com"))) {
 					PhoneStatus s = (p.getPhone().getStatus()==PhoneStatus.OffHook) ? PhoneStatus.OnHook : PhoneStatus.OffHook;
 					p.getPhone().setStatus(s);
-				}
+				}*/
 				
 			}
 		};
@@ -153,7 +164,7 @@ public class SwitchBoard extends Server implements Observer {
 		public void onMessage(byte frame, String data) {
 			Log.info("Message received - "+data);
 			
-			action.Request r = (action.Request) Receive.fromJSON(data, action.Request.class);
+			action.PersonAction r = (action.PersonAction) Receive.fromJSON(data, action.PersonAction.class);
 			
 			if(r != null) {
 				switch(r.getAction()) {

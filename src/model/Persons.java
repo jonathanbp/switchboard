@@ -73,6 +73,17 @@ public class Persons extends Observable implements Observer {
 			}
 		};
 	}
+
+
+	public static Predicate withPhone(final String ip) {
+		return new Predicate() {
+			
+			@Override
+			public boolean match(Person p) {
+				return p.getPhone() != null && p.getPhone().getIp() != null && p.getPhone().getIp().equals(ip);
+			}
+		};
+	}
 	
 	
 }

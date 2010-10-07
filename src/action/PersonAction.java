@@ -2,7 +2,7 @@ package action;
 
 import model.entities.Person;
 
-public class Request {
+public class PersonAction {
 	
 	public enum Action {
 		addPerson,
