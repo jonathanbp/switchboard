@@ -24,6 +24,7 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
 
+import storage.Storage;
 import switchboard.util.ListUtil;
 
 
@@ -32,12 +33,17 @@ public class SwitchBoard extends Server implements Observer {
 
 	List<SwitchBoardWebSocket> _webSockets = new CopyOnWriteArrayList<SwitchBoardWebSocket>();
 	private SelectChannelConnector _connector;
-	public Persons people;
+	public Persons _people;
+	
+	public Storage _storage;
 
 	public SwitchBoard() {
+	
+		// fetch people
+    	_people = _storage.fetch();
+    	if(_people == null) _people = Persons.getInstance();
     	
-    	people = Persons.getInstance();
-    	people.addObserver(this);
+    	_people.addObserver(this);
     	
     	// connector
         _connector = new SelectChannelConnector();
@@ -78,7 +84,7 @@ public class SwitchBoard extends Server implements Observer {
 				}
 				
 				// find person with phone with ip and act according to action
-				Person p = ListUtil.single(people.find(Persons.withPhone(request[IP])));				
+				Person p = ListUtil.single(_people.find(Persons.withPhone(request[IP])));				
 				p.getPhone().setStatus(PhoneStatus.fromString(request[ACTION]));
 				
 				/*for(Person p : people.find(Persons.withEmail("one@cetrea.com"))) {
@@ -169,7 +175,8 @@ public class SwitchBoard extends Server implements Observer {
 			if(r != null) {
 				switch(r.getAction()) {
 					case addPerson:
-						people.add(r.getPerson());
+						_people.add(r.getPerson());
+						_storage.store(_people);
 						break;
 				}
 			}

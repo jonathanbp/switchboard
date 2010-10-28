@@ -6,7 +6,7 @@ import java.util.Observer;
 public class Person extends Observable implements Observer {
 	
 	private String name;
-	private String id;
+	private String _id;
 	private String email;
 	private Phone phone;
 	private Calendar calendar;
@@ -22,13 +22,17 @@ public class Person extends Observable implements Observer {
 	}
 
 	public String getId() {
-		return id;
+		return _id;
 	}
 	
+	public void setId(String id) {
+		_id = id;
+	}
+
 	public void setCalendar(Calendar calendar) {
 		if(this.calendar!=null) this.calendar.deleteObserver(this);
 		this.calendar = calendar;
-		this.calendar.addObserver(this);
+		if(this.calendar != null) this.calendar.addObserver(this);
 		setChanged();
 		notifyObservers();
 	}
@@ -56,7 +60,7 @@ public class Person extends Observable implements Observer {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-		this.id = email.replace("@", "").replace(".", "");
+		this._id = email.replace("@", "").replace(".", "");
 		
 		setChanged();
 		notifyObservers();
